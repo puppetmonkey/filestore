@@ -1,114 +1,106 @@
-<html>
-
-<head>
-  <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
-  <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-    crossorigin="anonymous">
-
-  <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
-    crossorigin="anonymous">
-
-  <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-    crossorigin="anonymous"></script>
-  <script lang="javascript">
-  </script>
-</head>
-
-<body>
-  <form>
-    <div style="width:500px;margin:10px auto;text-align: center;">
-      <div style="font-size:28px;font-weight:bold;margin:0px auto;">用户注册</div>
-      <br />
-      <table style="width:100%;text-align: left;">
-        <tbody>
-          <tr style="margin-bottom: 20px;">
-            <td>
-              <span class="p">*</span>
-              <label for="username" class="l"> 新用户名:</label>
-            </td>
-            <td>
-              <input id="username" type="text" style="height:30px;width:250px;padding-right:50px;">
-            </td>
-          </tr>
-          <tr>
-            <td><br></td>
-            <td></td>
-          </tr>
-          <tr style="margin-bottom: 20px;">
-            <td>
-              <span class="p">*</span>
-              <label for="password" class="l"> 密码:</label>
-            </td>
-            <td>
-              <input id="password" type="text" style="height:30px;width:250px;padding-right:50px;">
-            </td>
-          </tr>
-          <tr>
-            <td><br></td>
-            <td></td>
-          </tr>
-          <tr style="margin-bottom: 20px;">
-            <td>
-              <span class="p">*</span>
-              <label for="passwordc" class="l"> 确认密码:</label>
-            </td>
-            <td>
-              <input id="passwordc" type="text" style="height:30px;width:250px;padding-right:50px;">
-            </td>
-          </tr>
-          <tr>
-            <td><br></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>
-            </td>
-            <td>
-              <input class="btn btn-success" type="button" style="margin:0 auto;width:250px;" value="点击注册" onclick='onSignup()' />
-              <label name='login_hint' id='login_hint' style='display:none'>注册成功，２秒后跳转到登录页面...</label>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>用户注册</title>
+    <script src="https://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css"
+      integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
+      integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div class="container" style="max-width: 500px; margin-top: 50px">
+      <h2 class="text-center">用户注册</h2>
+      <form id="signupForm">
+        <div class="form-group">
+          <label for="username"
+            >新用户名 <span class="text-danger">*</span></label
+          >
+          <input type="text" class="form-control" id="username" required />
+        </div>
+        <div class="form-group">
+          <label for="password">密码 <span class="text-danger">*</span></label>
+          <input type="password" class="form-control" id="password" required />
+        </div>
+        <div class="form-group">
+          <label for="passwordc"
+            >确认密码 <span class="text-danger">*</span></label
+          >
+          <input type="password" class="form-control" id="passwordc" required />
+        </div>
+        <button
+          type="button"
+          class="btn btn-success btn-block"
+          onclick="onSignup()"
+        >
+          点击注册
+        </button>
+        <div
+          id="login_hint"
+          class="alert alert-success text-center"
+          style="display: none; margin-top: 20px"
+        >
+          注册成功，2秒后跳转到登录页面...
+        </div>
+      </form>
     </div>
-  </form>
-</body>
 
-<script lang="javascript">
-  function onSignup() {
-    var username = document.getElementById('username');
-    var password = document.getElementById('password');
-    $.ajax({
-      url: "/user/signup",
-      type: "POST",
-      data: {
-        "username": username.value,
-        "password": password.value
-      },
-      error: function (jqXHR, textStatus, errorThrown) {
-        if (textStatus == "error") {
-          alert(textStatus + " : " + errorThrown);
-        } else {
-          alert(textStatus);
-        }
-      },
-      success: function (data, textStatus, jqXHR) {
-        if (data == 'SUCCESS') {
-          // 成功后跳到登录页
-          document.getElementById("login_hint").style.display = "block";
-          setTimeout(() => {
-            window.location.href = '/static/view/signin.html';
-          }, 2000);
+    <script>
+      function onSignup() {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        var passwordc = document.getElementById("passwordc").value;
 
-        } else {
-          alert('注册失败');
+        if (password !== passwordc) {
+          alert("密码和确认密码不匹配");
+          return;
         }
+
+        $.ajax({
+          url: "/signup",
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify({
+            username: username,
+            password: password,
+            re_password: passwordc,
+          }),
+          success: function (data) {
+            if (data && data.code === 1000) {
+              // 假设code为10000代表成功
+              document.getElementById("login_hint").style.display = "block";
+              setTimeout(() => {
+                window.location.href = "/static/view/signin.html";
+              }, 2000);
+            } else {
+              var errorMessage =
+                data && data.message ? data.message : "未知错误";
+              alert("注册失败：" + errorMessage);
+            }
+          },
+          error: function (jqXHR) {
+            var errorMessage =
+              jqXHR.responseJSON && jqXHR.responseJSON.message
+                ? jqXHR.responseJSON.message
+                : "注册失败，未知错误";
+            alert("注册失败：" + errorMessage);
+          },
+        });
       }
-    });
-  }
-</script>
-
+    </script>
+  </body>
 </html>

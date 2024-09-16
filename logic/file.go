@@ -38,7 +38,7 @@ func createnewfile(fileMeta *models.FileMeta, o *models.Originfile) (*models.Fil
 
 	return fileMeta, nil
 }
-func Uploadfile(o *models.Originfile) (*models.FileMeta, error) {
+func Uploadfile(o *models.Originfile, u *models.User) (*models.FileMeta, error) {
 	//file元数据构建
 	fileMeta := &models.FileMeta{
 		FileName: o.Head.Filename,
@@ -52,6 +52,17 @@ func Uploadfile(o *models.Originfile) (*models.FileMeta, error) {
 	err = mysql.UpdateFileMeta(fileMeta)
 	if err != nil {
 		zap.L().Error("mysql db upload file failed", zap.Error(err))
+		return nil, err
+	}
+	userfile := &models.UserFile{
+		UserName: u.Username,
+		FileHash: fileMeta.FileSha1,
+		FileName: fileMeta.FileName,
+		FileSize: fileMeta.FileSize,
+	}
+	err = mysql.UploadUserfile(userfile)
+	if err != nil {
+		zap.L().Error("mysql db upload userfile failed", zap.Error(err))
 		return nil, err
 	}
 	return fileMeta, nil

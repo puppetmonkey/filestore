@@ -3,6 +3,7 @@ package router
 import (
 	"filestore/controller"
 	"filestore/logger"
+	"filestore/middlewares"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -31,14 +32,16 @@ func SetupRouter(mode string) *gin.Engine {
 	v1.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
-	v1.GET("/file/upload", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", nil)
+
+	v1.GET("/signup", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "signup.html", nil)
 	})
-	v1.POST("/file/upload", controller.UploadHandler)
-	v1.GET("/file/meta", controller.GetFileMetaHandler)
-	v1.POST("/file/download", controller.DownloadHandler)
-	v1.POST("/file/update", controller.UpdateFileMeta)
-	v1.POST("/file/delete", controller.FileDeleteHandler)
+	v1.POST("/signup", controller.SignUpHandler)
+
+	v1.GET("/login", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "signin.html", nil)
+	})
+	v1.POST("/login", controller.LoginHandler)
 	// // 根据时间或分数获取帖子列表
 	// v1.GET("/posts2", controller.GetPostListHandler2)
 	// v1.GET("/posts", controller.GetPostListHandler)
@@ -46,14 +49,20 @@ func SetupRouter(mode string) *gin.Engine {
 	// v1.GET("/community/:id", controller.CommunityDetailHandler)
 	// v1.GET("/post/:id", controller.GetPostDetailHandler)
 
-	// v1.Use(middlewares.JWTAuthMiddleware()) // 应用JWT认证中间件
-
-	// {
-	// 	v1.POST("/post", controller.CreatePostHandler)
-
-	// 	// 投票
-	// 	v1.POST("/vote", controller.PostVoteController)
-	// }
+	v1.Use(middlewares.JWTAuthMiddleware()) // 应用JWT认证中间件
+	{
+		v1.POST("/userinfo", controller.GetUserinfoHandler)
+		v1.GET("/file/upload", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "index.html", nil)
+		})
+		v1.POST("/file/upload", controller.UploadHandler)
+		v1.GET("/file/meta", controller.GetFileMetaHandler)
+		v1.POST("/file/query", controller.FileQueryHandler)
+		v1.POST("/file/download", controller.DownloadHandler)
+		v1.POST("/file/update", controller.UpdateFileMeta)
+		v1.POST("/file/delete", controller.FileDeleteHandler)
+		v1.POST("/file/fastupload", controller.TryFastUploadHandler)
+	}
 
 	// // pprof.Register(r) // 注册pprof相关路由
 
