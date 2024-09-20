@@ -5,8 +5,10 @@ import (
 	"filestore/logic"
 	"filestore/models"
 	"fmt"
+	"math"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -132,8 +134,77 @@ func TryFastUploadHandler(c *gin.Context) {
 	}
 	err = mysql.UploadUserfile(userfile)
 	if err != nil {
-		ResponseSuccess(c, nil)
+		ResponseError(c, CodeServerBusy)
 		return
 	}
-	ResponseError(c, CodeServerBusy)
+	ResponseSuccess(c, nil)
+}
+
+func InitialMultipartUploadHandler(c *gin.Context) {
+	// 1. 解析用户请求参数
+	username := c.Query("username")
+	filehash := c.Query("filehash")
+	filesize, err := strconv.Atoi(c.PostForm("filesize"))
+	if err != nil {
+		ResponseError(c, CodeInvalidParam)
+		return
+	}
+	//生成分块上传的初始化信息
+	upInfo := &models.MultipartUploadInfo{
+		FileHash:   filehash,
+		FileSize:   filesize,
+		UploadID:   username + fmt.Sprintf("%x", time.Now().UnixNano()),
+		ChunkSize:  5 * 1024 * 1024, // 5MB
+		ChunkCount: int(math.Ceil(float64(filesize) / (5 * 1024 * 1024))),
+	}
+	err = logic.SetMultipartUploadInfo(upInfo)
+	// 5. 将响应初始化数据返回到客户端
+	if err != nil {
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	ResponseSuccess(c, *upInfo)
+}
+
+// UploadPartHandler : 上传文件分块
+func UploadPartHandler(c *gin.Context) {
+	//获取参数。
+	uploadID := c.Query("uploadid")
+	chunkIndex := c.Query("index")
+	zap.L().Debug("Uplaodid", zap.String("id1", uploadID))
+	p := &models.UploadpartInfo{
+		UploadID:   uploadID,
+		ChunkIndex: chunkIndex,
+	}
+	err := logic.UploadPartHandler(c, p)
+	if err != nil {
+		ResponseError(c, CodeServerBusy)
+	}
+	ResponseSuccess(c, nil)
+}
+
+// CompleteUploadHandler : 通知上传合并
+func CompleteUploadHandler(c *gin.Context) {
+	// 1. 解析请求参数
+	upid := c.PostForm("uploadid")
+	username := c.PostForm("username")
+	filehash := c.PostForm("filehash")
+	filesize, err := strconv.Atoi(c.PostForm("filesize"))
+	if err != nil {
+		ResponseError(c, CodeInvalidParam)
+		return
+	}
+	filename := c.PostForm("filename")
+	p := &models.UserFile{
+		UserName: username,
+		FileHash: filehash,
+		FileName: filename,
+		FileSize: int64(filesize),
+	}
+	err = logic.CompleteUpload(p, upid)
+	if err != nil {
+		ResponseError(c, CodeServerBusy)
+	}
+	ResponseSuccess(c, nil)
+
 }

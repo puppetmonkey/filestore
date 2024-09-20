@@ -19,3 +19,15 @@ type Originfile struct {
 	File multipart.File
 	Head *multipart.FileHeader
 }
+
+type MultipartUploadInfo struct {
+	FileHash   string
+	FileSize   int
+	UploadID   string
+	ChunkSize  int
+	ChunkCount int
+}
+type UploadpartInfo struct {
+	UploadID   string
+	ChunkIndex string
+}

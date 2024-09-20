@@ -48,7 +48,10 @@ func SetupRouter(mode string) *gin.Engine {
 	// v1.GET("/community", controller.CommunityHandler)
 	// v1.GET("/community/:id", controller.CommunityDetailHandler)
 	// v1.GET("/post/:id", controller.GetPostDetailHandler)
-
+	// 分块上传接口
+	v1.POST("/file/mpupload/init", controller.InitialMultipartUploadHandler)
+	v1.POST("/file/mpupload/uppart", controller.UploadPartHandler)
+	v1.POST("/file/mpupload/complete", controller.CompleteUploadHandler)
 	v1.Use(middlewares.JWTAuthMiddleware()) // 应用JWT认证中间件
 	{
 		v1.POST("/userinfo", controller.GetUserinfoHandler)
@@ -62,6 +65,8 @@ func SetupRouter(mode string) *gin.Engine {
 		v1.POST("/file/update", controller.UpdateFileMeta)
 		v1.POST("/file/delete", controller.FileDeleteHandler)
 		v1.POST("/file/fastupload", controller.TryFastUploadHandler)
+		//分块上传
+
 	}
 
 	// // pprof.Register(r) // 注册pprof相关路由

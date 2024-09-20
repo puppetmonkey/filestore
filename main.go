@@ -2,6 +2,7 @@ package main
 
 import (
 	"filestore/dao/mysql"
+	"filestore/dao/redis"
 	"filestore/logger"
 	"filestore/pkg/snowflake"
 	"filestore/router"
@@ -40,11 +41,11 @@ func main() {
 		return
 	}
 	defer mysql.Close() // 程序退出关闭数据库连接
-	// if err := redis.Init(setting.Conf.RedisConfig); err != nil {
-	// 	fmt.Printf("init redis failed, err:%v\n", err)
-	// 	return
-	// }
-	// defer redis.Close()
+	if err := redis.Init(setting.Conf.RedisConfig); err != nil {
+		fmt.Printf("init redis failed, err:%v\n", err)
+		return
+	}
+	defer redis.Close()
 
 	if err := snowflake.Init(setting.Conf.StartTime, setting.Conf.MachineID); err != nil {
 		fmt.Printf("init snowflake failed, err:%v\n", err)
@@ -63,5 +64,4 @@ func main() {
 		fmt.Printf("run server failed, err:%v\n", err)
 		return
 	}
-
 }
