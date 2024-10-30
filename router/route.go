@@ -42,12 +42,6 @@ func SetupRouter(mode string) *gin.Engine {
 		c.HTML(http.StatusOK, "signin.html", nil)
 	})
 	v1.POST("/login", controller.LoginHandler)
-	// // 根据时间或分数获取帖子列表
-	// v1.GET("/posts2", controller.GetPostListHandler2)
-	// v1.GET("/posts", controller.GetPostListHandler)
-	// v1.GET("/community", controller.CommunityHandler)
-	// v1.GET("/community/:id", controller.CommunityDetailHandler)
-	// v1.GET("/post/:id", controller.GetPostDetailHandler)
 	// 分块上传接口
 	v1.POST("/file/mpupload/init", controller.InitialMultipartUploadHandler)
 	v1.POST("/file/mpupload/uppart", controller.UploadPartHandler)
@@ -66,7 +60,6 @@ func SetupRouter(mode string) *gin.Engine {
 		v1.POST("/file/delete", controller.FileDeleteHandler)
 		v1.POST("/file/fastupload", controller.TryFastUploadHandler)
 		//分块上传
-
 	}
 
 	// // pprof.Register(r) // 注册pprof相关路由
