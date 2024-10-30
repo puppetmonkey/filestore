@@ -1,0 +1,10 @@
+{
+  "name": "hardhat-project",
+  "devDependencies": {
+    "@nomiclabs/hardhat-waffle": "^2.0.6",
+    "hardhat": "^2.22.11"
+  },
+  "scripts": {
+    "deploy":"npx hardhat run scripts/deploy.js --network localhost"
+  }
+}

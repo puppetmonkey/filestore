@@ -37,6 +37,7 @@ func UploadHandler(c *gin.Context) {
 	u := &models.User{
 		Username: username,
 	}
+
 	zap.L().Debug("username", zap.String("username", username))
 	_, err = logic.Uploadfile(o, u)
 	if err != nil {
@@ -44,11 +45,13 @@ func UploadHandler(c *gin.Context) {
 		ResponseError(c, CodeServerBusy)
 		return
 	}
+
 	c.Redirect(http.StatusFound, "http://"+c.Request.Host+"/static/view/home.html")
 }
 func GetFileMetaHandler(c *gin.Context) {
 	p := c.Query("filesha1")
 	zap.L().Debug("GetFileMetaHandler", zap.String("p", p))
+
 	data, err := mysql.GetFileMeta(p)
 	if err != nil {
 		zap.L().Error("mysql.GetFileMeta(p)", zap.Error(err))

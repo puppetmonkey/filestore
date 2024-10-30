@@ -2,9 +2,11 @@ package logic
 
 import (
 	"errors"
+	"filestore/dao/ipfs"
 	"filestore/dao/mysql"
 	"filestore/dao/redis"
 	"filestore/models"
+	"filestore/pkg/eth"
 	"filestore/util"
 	"io"
 	"os"
@@ -59,6 +61,21 @@ func Uploadfile(o *models.Originfile, u *models.User) (*models.FileMeta, error) 
 		zap.L().Error("create file failed", zap.Error(err))
 		return nil, err
 	}
+	//上传ipfs
+	cid, err := ipfs.Uploadfile(fileMeta, u)
+	if err != nil {
+		zap.L().Error("Ipfs.Uploadfile(fileMeta, u) FAILED", zap.Error(err))
+		return nil, err
+	}
+
+	//将cid 存到链上
+	_, err = eth.StoreFile2eth(cid, fileMeta)
+
+	if err != nil {
+		zap.L().Error("eth.NewFileStorage FAILED", zap.Error(err))
+		return nil, err
+	}
+
 	err = mysql.UpdateFileMeta(fileMeta)
 	if err != nil {
 		zap.L().Error("mysql db upload file failed", zap.Error(err))

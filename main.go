@@ -1,6 +1,7 @@
 package main
 
 import (
+	"filestore/dao/ipfs"
 	"filestore/dao/mysql"
 	"filestore/dao/redis"
 	"filestore/logger"
@@ -47,6 +48,12 @@ func main() {
 	}
 	defer redis.Close()
 
+	if err := ipfs.Init("localhost:5001"); err != nil {
+		fmt.Printf("Failed to initialize IPFS: %v", err)
+	}
+	// if err := eth.Init("localhost:8545"); err != nil {
+	// 	fmt.Printf("Failed to initialize eth: %v", err)
+	// }
 	if err := snowflake.Init(setting.Conf.StartTime, setting.Conf.MachineID); err != nil {
 		fmt.Printf("init snowflake failed, err:%v\n", err)
 		return

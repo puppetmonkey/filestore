@@ -20,6 +20,7 @@ type AppConfig struct {
 	*LogConfig   `mapstructure:"log"`
 	*MySQLConfig `mapstructure:"mysql"`
 	*RedisConfig `mapstructure:"redis"`
+	*CephConfig  `mapstructure:"ceph"`
 }
 
 type MySQLConfig struct {
@@ -47,6 +48,12 @@ type LogConfig struct {
 	MaxSize    int    `mapstructure:"max_size"`
 	MaxAge     int    `mapstructure:"max_age"`
 	MaxBackups int    `mapstructure:"max_backups"`
+}
+
+type CephConfig struct {
+	CephAccessKey  string `mapstructure:"access_key"`
+	CephSecretKey  string `mapstructure:"secret_key"`
+	CephGWEndpoint string `mapstructure:"gw_endpoint"`
 }
 
 func Init(filePath string) (err error) {

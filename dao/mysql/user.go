@@ -29,9 +29,10 @@ func CheckUserExist(username string) (err error) {
 func InsertUser(user *models.User) (err error) {
 	// 对密码进行加密
 	user.Password = encryptPassword(user.Password)
+	user.PrivateKey = encryptPassword(user.PrivateKey)
 	// 执行SQL语句入库
-	sqlStr := `insert into tbl_user(user_id, user_name, user_pwd) values(?,?,?)`
-	_, err = db.Exec(sqlStr, user.UserID, user.Username, user.Password)
+	sqlStr := `insert into tbl_user(user_id, user_name, user_pwd, private_key, public_key) values(?,?,?,?,?)`
+	_, err = db.Exec(sqlStr, user.UserID, user.Username, user.Password, user.PrivateKey, user.PublicKey)
 	return
 }
 
